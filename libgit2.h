@@ -15,4 +15,11 @@ typedef struct libgit2_result {
 
 libgit2_result libgit2_wrap_result(const int);
 
+// repository.h
+
+const libgit2_result libgit2_repository_init(
+		git_repository **out,
+		const char *path,
+		unsigned int is_bare);
+
 #endif
