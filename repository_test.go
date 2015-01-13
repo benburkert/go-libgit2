@@ -1,6 +1,7 @@
 package libgit2
 
 import (
+	"math/rand"
 	"os"
 	"testing"
 )
@@ -87,4 +88,14 @@ func TestRepositoryInitBare(t *testing.T) {
 			t.Error("got normal repo, want bare")
 		}
 	}
+}
+
+var r = rand.New(rand.NewSource(42)) // deterministic repo names
+
+func mustInitTestRepo(t *testing.T) *Repository {
+	repo, err := InitRepository(fmt.Sprintf("%x", r.Int31()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return repo
 }

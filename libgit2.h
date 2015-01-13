@@ -22,4 +22,10 @@ const libgit2_result libgit2_repository_init(
 		const char *path,
 		unsigned int is_bare);
 
+// signature.h
+
+const libgit2_result libgit2_signature_default(
+		git_signature **out,
+		git_repository *repo);
+
 #endif

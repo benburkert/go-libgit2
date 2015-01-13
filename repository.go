@@ -33,6 +33,12 @@ func InitRepository(dir string) (*Repository, error) {
 	return &Repository{r}, nil
 }
 
+// DefaultSignature returns a new action signature with default user and now
+// timestamp.
+func (r Repository) DefaultSignature() (*Signature, error) {
+	return defaultSignature(r)
+}
+
 // IsBare returns true if the repository is does not contain a working
 // directory.
 func (r Repository) IsBare() bool {
@@ -54,6 +60,10 @@ type gitRepository struct {
 	ptr *C.git_repository
 }
 
+func (r *gitRepository) init() {
+	runtime.SetFinalizer(r, (*gitRepository).free)
+}
+
 func (r *gitRepository) free() {
 	runtime.SetFinalizer(r, nil)
 	C.git_repository_free(r.ptr)
@@ -70,7 +80,7 @@ func gitInitRepository(path string, isBare bool) (*gitRepository, error) {
 	if err := unwrapErr(C.libgit2_repository_init(&r.ptr, cpath, cbare)); err != nil {
 		return nil, err
 	}
-	runtime.SetFinalizer(r, (*gitRepository).free)
+	r.init()
 	return r, nil
 }
 
