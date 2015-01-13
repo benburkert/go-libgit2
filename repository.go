@@ -13,6 +13,16 @@ type Repository struct {
 	*gitRepository
 }
 
+// InitBareRepository initializes a are Git repository.
+func InitBareRepository(dir string) (*Repository, error) {
+	r, err := gitInitRepository(dir, true)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Repository{r}, nil
+}
+
 // InitRepository initializes a normal Git repository.
 func InitRepository(dir string) (*Repository, error) {
 	r, err := gitInitRepository(dir, false)
@@ -21,6 +31,12 @@ func InitRepository(dir string) (*Repository, error) {
 	}
 
 	return &Repository{r}, nil
+}
+
+// IsBare returns true if the repository is does not contain a working
+// directory.
+func (r Repository) IsBare() bool {
+	return gitRepositoryIsBare(r.gitRepository)
 }
 
 // Path returns the file path the .git directory for normal repositories, or
@@ -56,6 +72,10 @@ func gitInitRepository(path string, isBare bool) (*gitRepository, error) {
 	}
 	runtime.SetFinalizer(r, (*gitRepository).free)
 	return r, nil
+}
+
+func gitRepositoryIsBare(repo *gitRepository) bool {
+	return C.git_repository_is_bare(repo.ptr) != 0
 }
 
 func gitRepositoryPath(repo *gitRepository) string {
