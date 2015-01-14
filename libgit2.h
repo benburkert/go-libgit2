@@ -15,7 +15,20 @@ typedef struct libgit2_result {
 
 libgit2_result libgit2_wrap_result(const int);
 
+// index.h
+
+const libgit2_result libgit2_index_add_bypath(
+		git_index *index,
+		const char *path);
+
+const libgit2_result libgit2_index_write(
+		git_index *index);
+
 // repository.h
+
+const libgit2_result libgit2_repository_index(
+		git_index **out,
+		git_repository *repo);
 
 const libgit2_result libgit2_repository_init(
 		git_repository **out,

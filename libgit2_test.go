@@ -1,7 +1,9 @@
 package libgit2
 
 import (
+	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"testing"
 )
@@ -33,11 +35,16 @@ func setup() string {
 }
 
 func cleanup(dir string) {
-	return
 	if err := os.RemoveAll(dir); err != nil {
 		panic(err)
 	}
 	Shutdown()
+}
+
+var r = rand.New(rand.NewSource(42)) // deterministic
+
+func rndstr() string {
+	return fmt.Sprintf("%x", r.Int31())
 }
 
 var gitconfig = []byte(`

@@ -39,6 +39,11 @@ func (r Repository) DefaultSignature() (*Signature, error) {
 	return defaultSignature(r)
 }
 
+// Index returns the index file for the repository.
+func (r Repository) Index() (*Index, error) {
+	return repositoryIndex(r)
+}
+
 // IsBare returns true if the repository is does not contain a working
 // directory.
 func (r Repository) IsBare() bool {

@@ -12,7 +12,23 @@ libgit2_result libgit2_wrap_result(const int code)
        return res;
 }
 
+// index.h
+
+LIBGIT2_WRAPPER(libgit2_index_add_bypath(
+		git_index *index,
+		const char *path),
+	git_index_add_bypath(index, path))
+
+LIBGIT2_WRAPPER(libgit2_index_write(
+		git_index *index),
+	git_index_write(index))
+
 // repository.h
+
+LIBGIT2_WRAPPER(libgit2_repository_index(
+		git_index **out,
+		git_repository *repo),
+	git_repository_index(out, repo))
 
 LIBGIT2_WRAPPER(libgit2_repository_init(
 		git_repository **out,
