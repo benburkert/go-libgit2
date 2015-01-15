@@ -1,6 +1,7 @@
 package libgit2
 
 import (
+	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -94,8 +95,16 @@ func mustInitTestRepo(t *testing.T) *Repository {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = os.Chdir(repo.Workdir()); err != nil {
+	return repo
+}
+
+func mustSeedTestFile(t *testing.T, repo *Repository) string {
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	f := rndstr()
+	if err := ioutil.WriteFile(f, []byte(rndstr()), 0644); err != nil {
 		t.Fatal(err)
 	}
-	return repo
+	return f
 }

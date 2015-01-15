@@ -24,6 +24,9 @@ const libgit2_result libgit2_index_add_bypath(
 const libgit2_result libgit2_index_write(
 		git_index *index);
 
+const libgit2_result libgit2_index_write_tree(
+		git_oid *out, git_index *index);
+
 // repository.h
 
 const libgit2_result libgit2_repository_index(
@@ -40,5 +43,12 @@ const libgit2_result libgit2_repository_init(
 const libgit2_result libgit2_signature_default(
 		git_signature **out,
 		git_repository *repo);
+
+// tree.h
+
+const libgit2_result libgit2_tree_lookup(
+		git_tree **out,
+		git_repository *repo,
+		const git_oid *id);
 
 #endif

@@ -23,6 +23,11 @@ LIBGIT2_WRAPPER(libgit2_index_write(
 		git_index *index),
 	git_index_write(index))
 
+LIBGIT2_WRAPPER(libgit2_index_write_tree(
+		git_oid *out,
+		git_index *index),
+	git_index_write_tree(out, index))
+
 // repository.h
 
 LIBGIT2_WRAPPER(libgit2_repository_index(
@@ -42,3 +47,11 @@ LIBGIT2_WRAPPER(libgit2_signature_default(
 		git_signature **out,
 		git_repository *repo),
 	git_signature_default(out, repo))
+
+// tree.h
+
+LIBGIT2_WRAPPER(libgit2_tree_lookup(
+		git_tree **out,
+		git_repository *repo,
+		const git_oid *id),
+	git_tree_lookup(out, repo, id))

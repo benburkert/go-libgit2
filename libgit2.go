@@ -6,6 +6,7 @@ package libgit2
 #include "libgit2.h"
 */
 import "C"
+
 import "unsafe"
 
 // Init initializes libgit2 global state. Init must be called before any other

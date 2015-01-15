@@ -2,6 +2,7 @@ package libgit2
 
 //#include "libgit2.h"
 import "C"
+
 import (
 	"os"
 	"runtime"
@@ -36,6 +37,15 @@ func (i Index) Write() error {
 	return gitIndexWrite(i.gitIndex)
 }
 
+// Write the index as a tree.
+func (i Index) WriteTree(repo Repository) (*Tree, error) {
+	oid, err := gitIndexWriteTree(i.gitIndex)
+	if err != nil {
+		return nil, err
+	}
+	return lookupTree(repo, OID{oid})
+}
+
 type gitIndex struct {
 	ptr *C.git_index
 }
@@ -58,6 +68,11 @@ func gitIndexAddBypath(idx *gitIndex, path string) error {
 
 func gitIndexWrite(idx *gitIndex) error {
 	return unwrapErr(C.libgit2_index_write(idx.ptr))
+}
+
+func gitIndexWriteTree(idx *gitIndex) (*gitOID, error) {
+	oid := &gitOID{ptr: &C.git_oid{}}
+	return oid, unwrapErr(C.libgit2_index_write_tree(oid.ptr, idx.ptr))
 }
 
 func gitRepositoryIndex(repo *gitRepository) (*gitIndex, error) {
