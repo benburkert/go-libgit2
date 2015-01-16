@@ -51,6 +51,15 @@ func (r Repository) DefaultSignature() (*Signature, error) {
 	return defaultSignature(r)
 }
 
+// Retrieve and resolve the reference pointed at by HEAD.
+func (r Repository) Head() (*Reference, error) {
+	ref, err := gitRepositoryHead(r.gitRepository)
+	if err != nil {
+		return nil, err
+	}
+	return &Reference{ref}, nil
+}
+
 // Index returns the index file for the repository.
 func (r Repository) Index() (*Index, error) {
 	return repositoryIndex(r)
@@ -81,6 +90,14 @@ func (r Repository) isUnbornHead() bool {
 	return gitRepositoryHeadUnborn(r.gitRepository)
 }
 
+func (r Repository) tip() (*Commit, error) {
+	ref, err := r.Head()
+	if err != nil {
+		return nil, err
+	}
+	return lookupCommit(r, *ref.target())
+}
+
 type gitRepository struct {
 	ptr *C.git_repository
 }
@@ -103,6 +120,16 @@ func gitInitRepository(path string, isBare bool) (*gitRepository, error) {
 	cbare := ucbool(isBare)
 
 	if err := unwrapErr(C.libgit2_repository_init(&r.ptr, cpath, cbare)); err != nil {
+		return nil, err
+	}
+	r.init()
+	return r, nil
+}
+
+func gitRepositoryHead(repo *gitRepository) (*gitReference, error) {
+	r := new(gitReference)
+
+	if err := unwrapErr(C.libgit2_repository_head(&r.ptr, repo.ptr)); err != nil {
 		return nil, err
 	}
 	r.init()

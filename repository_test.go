@@ -110,6 +110,24 @@ func TestRepositoryUnbornHead(t *testing.T) {
 	}
 }
 
+func TestRepositoryHead(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	_, err := repo.Head()
+	gitErr, ok := err.(*gitError)
+	if err == nil || !ok {
+		t.Fatal("want errNotFound error")
+	}
+	if gitErr.class != errClassReference {
+		t.Errorf("want error class %d, got %d", errClassNone, gitErr.class)
+	}
+	if gitErr.code != errUnbornBranch {
+		t.Errorf("want error code %d, got %d", errUnbornBranch, gitErr.code)
+	}
+}
+
 func mustInitTestRepo(t *testing.T) *Repository {
 	repo, err := InitRepository(rndstr())
 	if err != nil {
