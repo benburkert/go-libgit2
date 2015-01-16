@@ -46,6 +46,10 @@ func (i Index) WriteTree(repo Repository) (*Tree, error) {
 	return lookupTree(repo, OID{oid})
 }
 
+func (i Index) entryCount() uint {
+	return gitIndexEntrycount(i.gitIndex)
+}
+
 type gitIndex struct {
 	ptr *C.git_index
 }
@@ -64,6 +68,10 @@ func gitIndexAddBypath(idx *gitIndex, path string) error {
 	defer C.free(unsafe.Pointer(cpath))
 
 	return unwrapErr(C.libgit2_index_add_bypath(idx.ptr, cpath))
+}
+
+func gitIndexEntrycount(idx *gitIndex) uint {
+	return uint(C.git_index_entrycount(idx.ptr))
 }
 
 func gitIndexWrite(idx *gitIndex) error {

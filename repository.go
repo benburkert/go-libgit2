@@ -33,6 +33,18 @@ func InitRepository(dir string) (*Repository, error) {
 	return &Repository{r}, nil
 }
 
+func (r Repository) Commit(options ...CommitOption) (*Commit, error) {
+	config := &commitConfig{repo: r}
+	for _, opt := range options {
+		opt(config)
+	}
+	if err := config.check(); err != nil {
+		return nil, err
+	}
+
+	return createCommit(config)
+}
+
 // DefaultSignature returns a new action signature with default user and now
 // timestamp.
 func (r Repository) DefaultSignature() (*Signature, error) {

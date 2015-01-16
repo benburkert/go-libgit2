@@ -12,6 +12,28 @@ libgit2_result libgit2_wrap_result(const int code)
        return res;
 }
 
+// commit.h
+
+LIBGIT2_WRAPPER(libgit2_commit_create(
+		git_oid *id,
+		git_repository *repo,
+		const char *update_ref,
+		const git_signature *author,
+		const git_signature *committer,
+		const char *message_encoding,
+		const char *message,
+		const git_tree *tree,
+		size_t parent_count,
+		const git_commit **parents),
+	git_commit_create(id, repo, update_ref, author, committer, message_encoding,
+		message, tree, parent_count, parents))
+
+LIBGIT2_WRAPPER(libgit2_commit_lookup(
+		git_commit **commit,
+		git_repository *repo,
+		const git_oid *id),
+	git_commit_lookup(commit, repo, id))
+
 // index.h
 
 LIBGIT2_WRAPPER(libgit2_index_add_bypath(

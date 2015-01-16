@@ -15,6 +15,25 @@ typedef struct libgit2_result {
 
 libgit2_result libgit2_wrap_result(const int);
 
+// commit.h
+
+const libgit2_result libgit2_commit_create(
+		git_oid *id,
+		git_repository *repo,
+		const char *update_ref,
+		const git_signature *author,
+		const git_signature *committer,
+		const char *message_encoding,
+		const char *message,
+		const git_tree *tree,
+		size_t parent_count,
+		const git_commit **parents);
+
+const libgit2_result libgit2_commit_lookup(
+		git_commit **commit,
+		git_repository *repo,
+		const git_oid *id);
+
 // index.h
 
 const libgit2_result libgit2_index_add_bypath(
