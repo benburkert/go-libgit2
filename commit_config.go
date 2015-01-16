@@ -19,6 +19,9 @@ type commitConfig struct {
 	encoding, message, updateRef string
 
 	allowEmpty, allowEmptyMessage bool
+
+	cleanupMessage, stripComments bool
+	commentMarker                 rune
 }
 
 func (c *commitConfig) check() error {
@@ -45,6 +48,14 @@ func (c *commitConfig) check() error {
 		return errCommitMessageEmpty
 	}
 
+	if c.cleanupMessage {
+		msg, err := gitMessagePrettify(c.message, c.stripComments, c.commentMarker)
+		if err != nil {
+			return err
+		}
+		c.message = msg
+	}
+
 	if c.author == nil {
 		sig, err := c.repo.DefaultSignature()
 		if err != nil {
@@ -69,3 +80,31 @@ func AllowEmpty(c *commitConfig) { c.allowEmpty = true }
 
 // AllowEmptyMessage allows for an empty commit message.
 func AllowEmptyMessage(c *commitConfig) { c.allowEmptyMessage = true }
+
+// Message sets the commit message string.
+func Message(message string) CommitOption {
+	return func(c *commitConfig) {
+		c.message = message
+	}
+}
+
+// CleanupMessage automatically strips whitespace and adds a newline at the end
+// of the commit message. If stripComments is true, comment lines are removed.
+func CleanupMessage(stripComments bool) CommitOption {
+	return func(c *commitConfig) {
+		c.cleanupMessage = true
+		if stripComments {
+			c.stripComments = true
+			if c.commentMarker == 0 {
+				c.commentMarker = '#'
+			}
+		}
+	}
+}
+
+// CommentMarker sets the rune character of comment lines in the message.
+func CommentMarker(char rune) CommitOption {
+	return func(c *commitConfig) {
+		c.commentMarker = char
+	}
+}

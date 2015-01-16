@@ -50,6 +50,15 @@ LIBGIT2_WRAPPER(libgit2_index_write_tree(
 		git_index *index),
 	git_index_write_tree(out, index))
 
+// message.h
+
+LIBGIT2_WRAPPER(libgit2_message_prettify(
+		git_buf *out,
+		const char *message,
+		int strip_comments,
+		char comment_char),
+	git_message_prettify(out, message, strip_comments, comment_char))
+
 // repository.h
 
 LIBGIT2_WRAPPER(libgit2_repository_index(

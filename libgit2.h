@@ -44,7 +44,16 @@ const libgit2_result libgit2_index_write(
 		git_index *index);
 
 const libgit2_result libgit2_index_write_tree(
-		git_oid *out, git_index *index);
+		git_oid *out,
+		git_index *index);
+
+// message.h
+
+const libgit2_result libgit2_message_prettify(
+		git_buf *out,
+		const char *message,
+		int strip_comments,
+		char comment_char);
 
 // repository.h
 

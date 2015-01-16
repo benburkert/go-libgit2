@@ -20,6 +20,13 @@ func Shutdown() {
 	C.git_libgit2_shutdown()
 }
 
+func cbool(b bool) C.int {
+	if b {
+		return C.int(1)
+	}
+	return C.int(0)
+}
+
 func ucbool(b bool) C.uint {
 	if b {
 		return C.uint(1)

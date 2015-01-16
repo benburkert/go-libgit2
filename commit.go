@@ -13,6 +13,11 @@ type Commit struct {
 	*gitCommit
 }
 
+// Message is the full message of a commit.
+func (c Commit) Message() string {
+	return gitCommitMessage(c.gitCommit)
+}
+
 func createCommit(config *commitConfig) (*Commit, error) {
 	gitParents := make([]*gitCommit, len(config.parents))
 	for i, c := range config.parents {
@@ -93,4 +98,8 @@ func gitCommitLookup(repo *gitRepository, oid *gitOID) (*gitCommit, error) {
 	}
 	c.init()
 	return c, nil
+}
+
+func gitCommitMessage(commit *gitCommit) string {
+	return C.GoString(C.git_commit_message(commit.ptr))
 }
