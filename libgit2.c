@@ -61,6 +61,15 @@ LIBGIT2_WRAPPER(libgit2_message_prettify(
 
 // repository.h
 
+LIBGIT2_WRAPPER(libgit2_repository_head(
+		git_reference **out,
+		git_repository *repo),
+	git_repository_head(out, repo))
+
+LIBGIT2_WRAPPER(libgit2_repository_head_detached(
+		git_repository *repo),
+	git_repository_head_detached(repo))
+
 LIBGIT2_WRAPPER(libgit2_repository_index(
 		git_index **out,
 		git_repository *repo),

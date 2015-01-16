@@ -57,6 +57,13 @@ const libgit2_result libgit2_message_prettify(
 
 // repository.h
 
+const libgit2_result libgit2_repository_head(
+		git_reference **out,
+		git_repository *repo);
+
+const libgit2_result libgit2_repository_head_detached(
+		git_repository *repo);
+
 const libgit2_result libgit2_repository_index(
 		git_index **out,
 		git_repository *repo);

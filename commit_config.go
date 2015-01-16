@@ -18,7 +18,7 @@ type commitConfig struct {
 
 	encoding, message, updateRef string
 
-	allowEmpty, allowEmptyMessage bool
+	allowEmpty, allowEmptyMessage, allowOrphan bool
 
 	cleanupMessage, stripComments bool
 	commentMarker                 rune
@@ -42,6 +42,10 @@ func (c *commitConfig) check() error {
 			return err
 		}
 		c.tree = tree
+	}
+
+	if c.updateRef == "" {
+		c.updateRef = "HEAD"
 	}
 
 	if c.message == "" && !c.allowEmptyMessage {
@@ -68,6 +72,18 @@ func (c *commitConfig) check() error {
 		c.committer = c.author
 	}
 
+	if c.repo.isUnbornHead() {
+		c.allowOrphan = true
+	}
+
+	if len(c.parents) == 0 && !c.allowOrphan {
+		tip, err := c.repo.tip()
+		if err != nil {
+			return err
+		}
+		c.parents = []*Commit{tip}
+	}
+
 	return nil
 }
 
@@ -81,12 +97,8 @@ func AllowEmpty(c *commitConfig) { c.allowEmpty = true }
 // AllowEmptyMessage allows for an empty commit message.
 func AllowEmptyMessage(c *commitConfig) { c.allowEmptyMessage = true }
 
-// Message sets the commit message string.
-func Message(message string) CommitOption {
-	return func(c *commitConfig) {
-		c.message = message
-	}
-}
+// AllowOrphan allows for an orphaned commit to be created.
+func AllowOrphan(c *commitConfig) { c.allowOrphan = true }
 
 // CleanupMessage automatically strips whitespace and adds a newline at the end
 // of the commit message. If stripComments is true, comment lines are removed.
@@ -106,5 +118,12 @@ func CleanupMessage(stripComments bool) CommitOption {
 func CommentMarker(char rune) CommitOption {
 	return func(c *commitConfig) {
 		c.commentMarker = char
+	}
+}
+
+// Message sets the commit message string.
+func Message(message string) CommitOption {
+	return func(c *commitConfig) {
+		c.message = message
 	}
 }

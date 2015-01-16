@@ -7,13 +7,12 @@ func TestCreateEmptyCommit(t *testing.T) {
 	pushd(t, repo.Workdir())
 	defer popd(t)
 
-	_, err := repo.Commit(AllowEmptyMessage, AllowEmpty)
-	if err != nil {
+	if _, err := repo.Commit(AllowEmptyMessage, AllowEmpty); err != nil {
 		t.Fatal(err)
 	}
 }
 
-func TestCreateCommit(t *testing.T) {
+func TestCreateCommitMessage(t *testing.T) {
 	repo := mustInitTestRepo(t)
 	pushd(t, repo.Workdir())
 	defer popd(t)
@@ -85,9 +84,12 @@ func TestCreateCommit(t *testing.T) {
 		if err != test.err {
 			if err == nil {
 				t.Errorf("want error %q, got none", err)
+			} else if test.err == nil {
+				t.Error(err)
 			} else {
 				t.Errorf("want error %q, got %q", test.err, err)
 			}
+			break
 		}
 
 		if test.message != "" && test.message != comment.Message() {

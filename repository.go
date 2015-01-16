@@ -73,6 +73,14 @@ func (r Repository) Workdir() string {
 	return gitRepositoryWorkdir(r.gitRepository)
 }
 
+func (r Repository) isDetachedHead() bool {
+	return gitRepositoryHeadDetached(r.gitRepository)
+}
+
+func (r Repository) isUnbornHead() bool {
+	return gitRepositoryHeadUnborn(r.gitRepository)
+}
+
 type gitRepository struct {
 	ptr *C.git_repository
 }
@@ -99,6 +107,14 @@ func gitInitRepository(path string, isBare bool) (*gitRepository, error) {
 	}
 	r.init()
 	return r, nil
+}
+
+func gitRepositoryHeadDetached(repo *gitRepository) bool {
+	return C.git_repository_head_detached(repo.ptr) != 0
+}
+
+func gitRepositoryHeadUnborn(repo *gitRepository) bool {
+	return C.git_repository_head_unborn(repo.ptr) != 0
 }
 
 func gitRepositoryIsBare(repo *gitRepository) bool {

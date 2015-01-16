@@ -90,6 +90,26 @@ func TestRepositoryInitBare(t *testing.T) {
 	}
 }
 
+func TestRepositoryDetachedHead(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	if repo.isDetachedHead() {
+		t.Error("repo head is detached")
+	}
+}
+
+func TestRepositoryUnbornHead(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	if !repo.isUnbornHead() {
+		t.Error("repo head is not unborn")
+	}
+}
+
 func mustInitTestRepo(t *testing.T) *Repository {
 	repo, err := InitRepository(rndstr())
 	if err != nil {
