@@ -4,7 +4,7 @@ libgit2_result libgit2_wrap_result(const int code)
 {
        libgit2_result res = { code,NULL };
 
-       if (res.code >= 0)
+       if (res.code >= 0 || res.code == GIT_ITEROVER)
                return res;
 
        res.err = (git_error *)malloc(sizeof(git_error));
