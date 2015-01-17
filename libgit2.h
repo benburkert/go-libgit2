@@ -73,6 +73,19 @@ const libgit2_result libgit2_repository_init(
 		const char *path,
 		unsigned int is_bare);
 
+// revwalk.h
+
+const libgit2_result libgit2_revwalk_new(
+		git_revwalk **out,
+		git_repository *repo);
+
+const libgit2_result libgit2_revwalk_next(
+		git_oid *out,
+		git_revwalk *walk);
+
+const libgit2_result libgit2_revwalk_push_head(
+		git_revwalk *walk);
+
 // signature.h
 
 const libgit2_result libgit2_signature_default(

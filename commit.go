@@ -18,6 +18,10 @@ func (c Commit) Message() string {
 	return gitCommitMessage(c.gitCommit)
 }
 
+func (c Commit) OID() OID {
+	return OID{gitCommitID(c.gitCommit)}
+}
+
 func createCommit(config *commitConfig) (*Commit, error) {
 	gitParents := make([]*gitCommit, len(config.parents))
 	for i, c := range config.parents {
@@ -98,6 +102,10 @@ func gitCommitLookup(repo *gitRepository, oid *gitOID) (*gitCommit, error) {
 	}
 	c.init()
 	return c, nil
+}
+
+func gitCommitID(commit *gitCommit) *gitOID {
+	return &gitOID{C.git_commit_id(commit.ptr)}
 }
 
 func gitCommitMessage(commit *gitCommit) string {

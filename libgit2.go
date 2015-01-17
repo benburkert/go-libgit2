@@ -36,7 +36,7 @@ func ucbool(b bool) C.uint {
 
 func unwrapErr(res C.struct_libgit2_result) error {
 	code := C.int(res.code)
-	if code >= 0 {
+	if code >= 0 || code == C.GIT_ITEROVER {
 		return nil
 	}
 

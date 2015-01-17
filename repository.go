@@ -77,6 +77,18 @@ func (r Repository) Path() string {
 	return gitRepositoryPath(r.gitRepository)
 }
 
+func (r Repository) Walk(options ...WalkerOption) (*Walker, error) {
+	config := &walkerConfig{repo: r}
+	for _, opt := range options {
+		opt(config)
+	}
+	if err := config.check(); err != nil {
+		return nil, err
+	}
+
+	return newWalker(config)
+}
+
 // Workdir returns the file path of the working directory for the repository.
 func (r Repository) Workdir() string {
 	return gitRepositoryWorkdir(r.gitRepository)

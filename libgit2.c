@@ -81,6 +81,22 @@ LIBGIT2_WRAPPER(libgit2_repository_init(
 		unsigned int is_bare),
 	git_repository_init(out, path, is_bare))
 
+// revwalk.h
+
+LIBGIT2_WRAPPER(libgit2_revwalk_new(
+		git_revwalk **out,
+		git_repository *repo),
+	git_revwalk_new(out, repo))
+
+LIBGIT2_WRAPPER(libgit2_revwalk_next(
+		git_oid *out,
+		git_revwalk *walk),
+	git_revwalk_next(out, walk))
+
+LIBGIT2_WRAPPER(libgit2_revwalk_push_head(
+		git_revwalk *walk),
+	git_revwalk_push_head(walk))
+
 // signature.h
 
 LIBGIT2_WRAPPER(libgit2_signature_default(
