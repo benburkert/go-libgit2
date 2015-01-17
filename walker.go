@@ -54,6 +54,16 @@ func (w *Walker) Err() error {
 	return w.err
 }
 
+// Slice returns a slice holding the commits and any error encountered while
+// walking the commits.
+func (w *Walker) Slice() ([]*Commit, error) {
+	s := []*Commit{}
+	for c := range w.C {
+		s = append(s, c)
+	}
+	return s, w.Err()
+}
+
 func (w *Walker) cancel() {
 	close(w.cc)
 	for range w.C {

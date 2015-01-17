@@ -79,6 +79,28 @@ func TestWalkerBuffered(t *testing.T) {
 	}
 }
 
+func TestWalkerSlice(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	n := 10
+	mustSeedRepoN(t, repo, n)
+
+	walk, err := repo.Walk(BufferSize(3))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	commits, err := walk.Slice()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(commits) != n {
+		t.Errorf("want commits slice len %d, got %d", n, len(commits))
+	}
+}
+
 func mustSeedRepo(t *testing.T, repo *Repository) {
 	if _, err := repo.Commit(AllowEmpty, Message(rndstr()), CleanupMessage(false)); err != nil {
 		t.Fatal(err)
