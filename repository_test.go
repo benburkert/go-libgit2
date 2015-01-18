@@ -128,6 +128,14 @@ func TestRepositoryHead(t *testing.T) {
 	}
 }
 
+func TestRepositoryOpen(t *testing.T) {
+	repo := mustInitTestRepo(t)
+
+	if _, err := OpenRepository(repo.Workdir()); err != nil {
+		t.Error(err)
+	}
+}
+
 func mustInitTestRepo(t *testing.T) *Repository {
 	repo, err := InitRepository(rndstr())
 	if err != nil {

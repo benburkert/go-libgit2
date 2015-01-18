@@ -81,6 +81,11 @@ LIBGIT2_WRAPPER(libgit2_repository_init(
 		unsigned int is_bare),
 	git_repository_init(out, path, is_bare))
 
+LIBGIT2_WRAPPER(libgit2_repository_open(
+		git_repository **out,
+		const char *path),
+	git_repository_open(out, path))
+
 // revwalk.h
 
 LIBGIT2_WRAPPER(libgit2_revwalk_new(

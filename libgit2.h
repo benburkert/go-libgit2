@@ -73,6 +73,10 @@ const libgit2_result libgit2_repository_init(
 		const char *path,
 		unsigned int is_bare);
 
+const libgit2_result libgit2_repository_open(
+		git_repository **out,
+		const char *path);
+
 // revwalk.h
 
 const libgit2_result libgit2_revwalk_new(

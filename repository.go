@@ -33,6 +33,15 @@ func InitRepository(dir string) (*Repository, error) {
 	return &Repository{r}, nil
 }
 
+func OpenRepository(dir string) (*Repository, error) {
+	r, err := gitRepositoryOpen(dir)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Repository{r}, nil
+}
+
 func (r Repository) Commit(options ...CommitOption) (*Commit, error) {
 	config := &commitConfig{repo: r}
 	for _, opt := range options {
@@ -158,6 +167,15 @@ func gitRepositoryHeadUnborn(repo *gitRepository) bool {
 
 func gitRepositoryIsBare(repo *gitRepository) bool {
 	return C.git_repository_is_bare(repo.ptr) != 0
+}
+
+func gitRepositoryOpen(path string) (*gitRepository, error) {
+	r := new(gitRepository)
+
+	cpath := C.CString(path)
+	defer C.free(unsafe.Pointer(cpath))
+
+	return r, unwrapErr(C.libgit2_repository_open(&r.ptr, cpath))
 }
 
 func gitRepositoryPath(repo *gitRepository) string {
