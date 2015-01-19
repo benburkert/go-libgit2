@@ -1,4 +1,4 @@
-# go-libgit2 [![GoDoc](https://godoc.org/github.com/benburkert/go-libgit2?status.png)](http://godoc.org/github.com/benburkert/go-libgit2)
+# go-libgit2 [![GoDoc](https://godoc.org/github.com/benburkert/go-libgit2?status.png)](http://godoc.org/github.com/benburkert/go-libgit2) [![Build Status](https://travis-ci.org/benburkert/go-libgit2.svg?branch=master)](https://travis-ci.org/benburkert/go-libgit2)
 
 Idiomatic Go bindings for [libgit2](https://github.com/libgit2/libgit2).
 
