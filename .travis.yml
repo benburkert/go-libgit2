@@ -9,7 +9,7 @@ before_install:
  - git clone https://github.com/libgit2/libgit2.git /tmp/libgit2
  - mkdir /tmp/libgit2/build
  - pushd /tmp/libgit2/build
- - cmake -DBUILD_CLAR=OFF ..
+ - cmake -DBUILD_CLAR=OFF DCMAKE_C_FLAGS=-fPIC ..
  - sudo cmake --build . --target install
  - popd
 script:
