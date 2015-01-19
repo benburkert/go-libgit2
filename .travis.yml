@@ -5,6 +5,12 @@ go:
   - tip
 before_install:
  - sudo apt-get update -qq
- - sudo apt-get install -qq libgit2
+ - sudo apt-get install -qq cmake libssh2-1-dev openssh-client openssh-server
+ - cd /tmp
+ - git clone https://github.com/libgit2/libgit2.git
+ - mkdir libgit2/build
+ - cd libgit2/build
+ - cmake ..
+ - cmake --build . --target install
 script:
   - go test -v ./...
