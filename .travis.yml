@@ -1,0 +1,20 @@
+language: go
+go:
+  - 1.4
+  - tip
+matrix:
+  allow_failures:
+    - go: tip
+  fast_finish: true
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq cmake libssh2-1-dev openssh-client openssh-server
+  - git clone https://github.com/libgit2/libgit2.git /tmp/libgit2
+  - mkdir /tmp/libgit2/build
+  - pushd /tmp/libgit2/build
+  - cmake -DBUILD_CLAR=OFF DCMAKE_C_FLAGS=-fPIC ..
+  - sudo cmake --build . --target install
+  - popd
+  - export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+script:
+  - go test -v ./...
