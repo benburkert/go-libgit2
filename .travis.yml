@@ -10,7 +10,7 @@ before_install:
  - git clone https://github.com/libgit2/libgit2.git
  - mkdir libgit2/build
  - cd libgit2/build
- - cmake ..
- - cmake --build . --target install
+ - cmake -DBUILD_CLAR=OFF ..
+ - sudo cmake --build . --target install
 script:
   - go test -v ./...
