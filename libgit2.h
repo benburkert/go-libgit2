@@ -96,6 +96,10 @@ const libgit2_result libgit2_signature_default(
 		git_signature **out,
 		git_repository *repo);
 
+const libgit2_result libgit2_signature_dup(
+		git_signature **dest,
+		const git_signature *sig);
+
 // tree.h
 
 const libgit2_result libgit2_tree_lookup(

@@ -97,3 +97,36 @@ func TestCreateCommitMessage(t *testing.T) {
 		}
 	}
 }
+
+func TestCommitAuthor(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	want, err := repo.DefaultSignature()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	commit, err := repo.Commit(Message("testing commit author"), AllowEmpty)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got, err := commit.Author()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if want.Name != got.Name {
+		t.Errorf("want author name %q, got %q", want.Name, got.Name)
+	}
+
+	if want.Email != got.Email {
+		t.Errorf("want author email %q, got %q", want.Email, got.Email)
+	}
+
+	if !want.When.Equal(got.When) {
+		t.Errorf("want author timestamp %q, got %q", want.When, got.When)
+	}
+}

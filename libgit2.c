@@ -109,6 +109,11 @@ LIBGIT2_WRAPPER(libgit2_signature_default(
 		git_repository *repo),
 	git_signature_default(out, repo))
 
+LIBGIT2_WRAPPER(libgit2_signature_dup(
+		git_signature **dest,
+		const git_signature *sig),
+	git_signature_dup(dest, sig))
+
 // tree.h
 
 LIBGIT2_WRAPPER(libgit2_tree_lookup(

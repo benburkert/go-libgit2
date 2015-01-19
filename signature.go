@@ -20,6 +20,14 @@ func defaultSignature(repo Repository) (*Signature, error) {
 	return &Signature{sig}, nil
 }
 
+func dupSignature(sig *gitSignature) (*Signature, error) {
+	sig, err := gitSignatureDup(sig)
+	if err != nil {
+		return nil, err
+	}
+	return &Signature{sig}, nil
+}
+
 type gitSignature struct {
 	ptr *C.git_signature
 
@@ -29,6 +37,10 @@ type gitSignature struct {
 	Email string
 	// When is the time time an action happened.
 	When time.Time
+}
+
+func (s *gitSignature) dup() (*gitSignature, error) {
+	return gitSignatureDup(s)
 }
 
 func (s *gitSignature) init() {
@@ -51,6 +63,17 @@ func gitSignatureDefault(repo *gitRepository) (*gitSignature, error) {
 	s := new(gitSignature)
 
 	err := unwrapErr(C.libgit2_signature_default(&s.ptr, repo.ptr))
+	if err != nil {
+		return nil, err
+	}
+	s.init()
+	return s, nil
+}
+
+func gitSignatureDup(sig *gitSignature) (*gitSignature, error) {
+	s := new(gitSignature)
+
+	err := unwrapErr(C.libgit2_signature_dup(&s.ptr, sig.ptr))
 	if err != nil {
 		return nil, err
 	}

@@ -13,6 +13,15 @@ type Commit struct {
 	*gitCommit
 }
 
+// Author returns the signature of the author of the commit.
+func (c Commit) Author() (*Signature, error) {
+	sig, err := c.author()
+	if err != nil {
+		return nil, err
+	}
+	return &Signature{sig}, nil
+}
+
 // Message is the full message of a commit.
 func (c Commit) Message() string {
 	return gitCommitMessage(c.gitCommit)
@@ -49,6 +58,10 @@ type gitCommit struct {
 	ptr *C.git_commit
 }
 
+func (c *gitCommit) author() (*gitSignature, error) {
+	return gitCommitAuthor(c).dup()
+}
+
 func (c *gitCommit) init() {
 	runtime.SetFinalizer(c, (*gitCommit).free)
 }
@@ -56,6 +69,10 @@ func (c *gitCommit) init() {
 func (c *gitCommit) free() {
 	runtime.SetFinalizer(c, nil)
 	C.git_commit_free(c.ptr)
+}
+
+func gitCommitAuthor(commit *gitCommit) *gitSignature {
+	return &gitSignature{ptr: C.git_commit_author(commit.ptr)}
 }
 
 func gitCommitCreate(repo *gitRepository, updateRef string, author,
