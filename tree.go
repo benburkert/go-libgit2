@@ -5,6 +5,7 @@ import "C"
 
 import "runtime"
 
+// Tree is the representation of a tree object.
 type Tree struct {
 	*gitTree
 }

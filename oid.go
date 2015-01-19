@@ -3,6 +3,7 @@ package libgit2
 //#include "libgit2.h"
 import "C"
 
+// OID is the unique identity of any object (commit, tree, blob, tag).
 type OID struct {
 	*gitOID
 }

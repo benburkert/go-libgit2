@@ -33,6 +33,7 @@ func InitRepository(dir string) (*Repository, error) {
 	return &Repository{r}, nil
 }
 
+// OpenRepository opens a git repository.
 func OpenRepository(dir string) (*Repository, error) {
 	r, err := gitRepositoryOpen(dir)
 	if err != nil {
@@ -42,6 +43,7 @@ func OpenRepository(dir string) (*Repository, error) {
 	return &Repository{r}, nil
 }
 
+// Commit creates a new commit in the repository.
 func (r Repository) Commit(options ...CommitOption) (*Commit, error) {
 	config := &commitConfig{repo: r}
 	for _, opt := range options {
@@ -60,7 +62,7 @@ func (r Repository) DefaultSignature() (*Signature, error) {
 	return defaultSignature(r)
 }
 
-// Retrieve and resolve the reference pointed at by HEAD.
+// Head retrieves and resolves the reference pointed at by HEAD.
 func (r Repository) Head() (*Reference, error) {
 	ref, err := gitRepositoryHead(r.gitRepository)
 	if err != nil {
@@ -86,6 +88,7 @@ func (r Repository) Path() string {
 	return gitRepositoryPath(r.gitRepository)
 }
 
+// Walk returns an in-progress walk through the commits in the repo.
 func (r Repository) Walk(options ...WalkerOption) (*Walker, error) {
 	config := &walkerConfig{repo: r}
 	for _, opt := range options {

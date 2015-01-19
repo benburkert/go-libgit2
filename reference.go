@@ -4,6 +4,7 @@ package libgit2
 import "C"
 import "runtime"
 
+// Reference is the in-memory representation of a reference.
 type Reference struct {
 	*gitReference
 }

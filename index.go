@@ -37,7 +37,7 @@ func (i Index) Write() error {
 	return gitIndexWrite(i.gitIndex)
 }
 
-// Write the index as a tree.
+// WriteTree writes the index as a tree.
 func (i Index) WriteTree(repo Repository) (*Tree, error) {
 	oid, err := gitIndexWriteTree(i.gitIndex)
 	if err != nil {

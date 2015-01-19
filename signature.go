@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// Signature is an action signature (e.g. for committers, taggers, etc)
 type Signature struct {
 	*gitSignature
 }

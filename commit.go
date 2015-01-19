@@ -27,6 +27,7 @@ func (c Commit) Message() string {
 	return gitCommitMessage(c.gitCommit)
 }
 
+// OID is the object ID of the commit.
 func (c Commit) OID() OID {
 	return OID{gitCommitID(c.gitCommit)}
 }

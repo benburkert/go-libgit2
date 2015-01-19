@@ -31,7 +31,7 @@ const (
 	errClassCheckout   errorClass = C.GITERR_CHECKOUT
 	errClassFetchHead  errorClass = C.GITERR_FETCHHEAD
 	errClassMerge      errorClass = C.GITERR_MERGE
-	errClassSsh        errorClass = C.GITERR_SSH
+	errClassSSH        errorClass = C.GITERR_SSH
 	errClassFilter     errorClass = C.GITERR_FILTER
 	errClassRevert     errorClass = C.GITERR_REVERT
 	errClassCallback   errorClass = C.GITERR_CALLBACK
