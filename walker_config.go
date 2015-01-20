@@ -5,6 +5,7 @@ type walkerConfig struct {
 
 	startRef string
 	bufSize  int
+	sortMode SortMode
 }
 
 func (c *walkerConfig) check() error {
@@ -18,5 +19,12 @@ type WalkerOption func(*walkerConfig)
 func BufferSize(n int) WalkerOption {
 	return func(c *walkerConfig) {
 		c.bufSize = n
+	}
+}
+
+// Sorting sets the sort mode of the walker.
+func Sorting(mode SortMode) WalkerOption {
+	return func(c *walkerConfig) {
+		c.sortMode = mode
 	}
 }

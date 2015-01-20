@@ -1,6 +1,9 @@
 package libgit2
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestWalkRepo(t *testing.T) {
 	repo := mustInitTestRepo(t)
@@ -98,6 +101,32 @@ func TestWalkerSlice(t *testing.T) {
 	}
 	if len(commits) != n {
 		t.Errorf("want commits slice len %d, got %d", n, len(commits))
+	}
+}
+
+func TestWalkerSortReverse(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	mustSeedRepoN(t, repo, 10)
+	defer popd(t)
+
+	walk, err := repo.Walk()
+	if err != nil {
+		t.Fatal(err)
+	}
+	wants, err := walk.Slice()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rwalk, err := repo.Walk(Sorting(SortReverse))
+
+	for i := len(wants) - 1; i > 0; i-- {
+		want := wants[i]
+		got := <-rwalk.C
+		if !reflect.DeepEqual(want, got) {
+			t.Errorf("want commit %q during reverse walk, got %q", want, got)
+		}
 	}
 }
 

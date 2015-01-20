@@ -55,6 +55,10 @@ func (c Commit) ShortID() (string, error) {
 	return c.shortID()
 }
 
+func (c Commit) String() string {
+	return c.ID().String()
+}
+
 func createCommit(config *commitConfig) (*Commit, error) {
 	gitParents := make([]*gitCommit, len(config.parents))
 	for i, c := range config.parents {

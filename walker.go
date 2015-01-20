@@ -8,6 +8,29 @@ import (
 	"sync"
 )
 
+// SortMode sets the sort order of a commit walker.
+type SortMode uint
+
+const (
+	// SortNone sorts the repository contents in no particular ordering;
+	// this sorting is arbitrary, implementation-specific
+	// and subject to change at any time.
+	// This is the default sorting for new walkers.
+	SortNone SortMode = C.GIT_SORT_NONE
+	// SortTopological sorts the repository contents in topological order
+	// (parents before children); this sorting mode
+	// can be combined with time sorting.
+	SortTopological SortMode = C.GIT_SORT_TOPOLOGICAL
+	// SortTime sorts the repository contents by commit time;
+	// this sorting mode can be combined with
+	// topological sorting.
+	SortTime SortMode = C.GIT_SORT_TIME
+	// SortReverse iterates through the repository contents in reverse
+	// order; this sorting mode can be combined with
+	// any of the above.
+	SortReverse SortMode = C.GIT_SORT_REVERSE
+)
+
 // Walker is an in-progress walk through the commits in a repo.
 type Walker struct {
 	*gitRevwalk
@@ -30,6 +53,10 @@ func newWalker(config *walkerConfig) (*Walker, error) {
 		if err = r.pushHead(); err != nil {
 			return nil, err
 		}
+	}
+
+	if config.sortMode != SortNone {
+		r.sorting(config.sortMode)
 	}
 
 	c := make(chan *Commit, config.bufSize)
@@ -126,6 +153,10 @@ func (r *gitRevwalk) pushHead() error {
 	return unwrapErr(C.libgit2_revwalk_push_head(r.ptr))
 }
 
+func (r *gitRevwalk) sorting(mode SortMode) {
+	gitRevwalkSorting(r, uint(mode))
+}
+
 func gitRevwalkNew(repo *gitRepository) (*gitRevwalk, error) {
 	var ptr *C.git_revwalk
 	if err := unwrapErr(C.libgit2_revwalk_new(&ptr, repo.ptr)); err != nil {
@@ -135,4 +166,8 @@ func gitRevwalkNew(repo *gitRepository) (*gitRevwalk, error) {
 	r := &gitRevwalk{ptr}
 	r.init()
 	return r, nil
+}
+
+func gitRevwalkSorting(walk *gitRevwalk, sortMode uint) {
+	C.git_revwalk_sorting(walk.ptr, C.uint(sortMode))
 }
