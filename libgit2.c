@@ -69,6 +69,13 @@ LIBGIT2_WRAPPER(libgit2_message_prettify(
 		char comment_char),
 	git_message_prettify(out, message, strip_comments, comment_char))
 
+// object.h
+
+LIBGIT2_WRAPPER(libgit2_object_short_id(
+		git_buf *out,
+		const git_object *obj),
+	git_object_short_id(out, obj))
+
 // repository.h
 
 LIBGIT2_WRAPPER(libgit2_repository_head(

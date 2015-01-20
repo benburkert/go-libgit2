@@ -63,6 +63,12 @@ const libgit2_result libgit2_message_prettify(
 		int strip_comments,
 		char comment_char);
 
+// object.h
+
+const libgit2_result libgit2_object_short_id(
+		git_buf *out,
+		const git_object *obj);
+
 // repository.h
 
 const libgit2_result libgit2_repository_head(

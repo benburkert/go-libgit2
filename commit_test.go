@@ -2,6 +2,7 @@ package libgit2
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -159,5 +160,26 @@ func TestCommitParents(t *testing.T) {
 	}
 	if !reflect.DeepEqual(want, got) {
 		t.Errorf("want commit parents %v, got %v", want, got)
+	}
+}
+
+func TestCommitShortID(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	commit, err := repo.Commit(AllowEmpty, AllowEmptyMessage)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	shortID, err := commit.ShortID()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	id := commit.ID().String()
+	if !strings.HasPrefix(id, shortID) {
+		t.Errorf("invalid short id %q for %q", shortID, id)
 	}
 }

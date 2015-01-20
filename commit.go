@@ -27,8 +27,8 @@ func (c Commit) Message() string {
 	return gitCommitMessage(c.gitCommit)
 }
 
-// OID is the object ID of the commit.
-func (c Commit) OID() OID {
+// ID is the object ID of the commit.
+func (c Commit) ID() OID {
 	return OID{gitCommitID(c.gitCommit)}
 }
 
@@ -48,6 +48,11 @@ func (c Commit) Parents() ([]*Commit, error) {
 		parents[i] = &Commit{cmt}
 	}
 	return parents, nil
+}
+
+// ShortID returns an abbreviated object ID of the commit.
+func (c Commit) ShortID() (string, error) {
+	return c.shortID()
 }
 
 func createCommit(config *commitConfig) (*Commit, error) {
@@ -88,6 +93,17 @@ func (c *gitCommit) init() {
 func (c *gitCommit) free() {
 	runtime.SetFinalizer(c, nil)
 	C.git_commit_free(c.ptr)
+}
+
+func (c *gitCommit) shortID() (string, error) {
+	buf := &C.git_buf{}
+	defer C.git_buf_free(buf)
+
+	err := unwrapErr(C.libgit2_object_short_id(buf, (*C.git_object)(c.ptr)))
+	if err != nil {
+		return "", err
+	}
+	return C.GoString(buf.ptr), nil
 }
 
 func gitCommitAuthor(commit *gitCommit) *gitSignature {
