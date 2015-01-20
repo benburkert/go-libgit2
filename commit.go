@@ -32,6 +32,24 @@ func (c Commit) OID() OID {
 	return OID{gitCommitID(c.gitCommit)}
 }
 
+// Parents are the parent commits of the commit.
+func (c Commit) Parents() ([]*Commit, error) {
+	n, err := gitCommitParentcount(c.gitCommit)
+	if err != nil {
+		return nil, err
+	}
+
+	parents := make([]*Commit, n)
+	for i := uint(0); i < n; i++ {
+		cmt, err := gitCommitParent(c.gitCommit, i)
+		if err != nil {
+			return nil, err
+		}
+		parents[i] = &Commit{cmt}
+	}
+	return parents, nil
+}
+
 func createCommit(config *commitConfig) (*Commit, error) {
 	gitParents := make([]*gitCommit, len(config.parents))
 	for i, c := range config.parents {
@@ -128,4 +146,14 @@ func gitCommitID(commit *gitCommit) *gitOID {
 
 func gitCommitMessage(commit *gitCommit) string {
 	return C.GoString(C.git_commit_message(commit.ptr))
+}
+
+func gitCommitParent(commit *gitCommit, n uint) (*gitCommit, error) {
+	c := new(gitCommit)
+	return c, unwrapErr(C.libgit2_commit_parent(&c.ptr, commit.ptr, C.uint(n)))
+}
+
+func gitCommitParentcount(commit *gitCommit) (uint, error) {
+	res := C.libgit2_commit_parentcount(commit.ptr)
+	return uint(res.code), unwrapErr(res)
 }

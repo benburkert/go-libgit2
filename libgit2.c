@@ -34,6 +34,16 @@ LIBGIT2_WRAPPER(libgit2_commit_lookup(
 		const git_oid *id),
 	git_commit_lookup(commit, repo, id))
 
+LIBGIT2_WRAPPER(libgit2_commit_parent(
+		git_commit **out,
+		const git_commit *commit,
+		unsigned int n),
+	git_commit_parent(out, commit, n))
+
+LIBGIT2_WRAPPER(libgit2_commit_parentcount(
+		const git_commit *commit),
+	git_commit_parentcount(commit))
+
 // index.h
 
 LIBGIT2_WRAPPER(libgit2_index_add_bypath(

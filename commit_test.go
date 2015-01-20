@@ -1,6 +1,9 @@
 package libgit2
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestCreateEmptyCommit(t *testing.T) {
 	repo := mustInitTestRepo(t)
@@ -128,5 +131,33 @@ func TestCommitAuthor(t *testing.T) {
 
 	if !want.When.Equal(got.When) {
 		t.Errorf("want author timestamp %q, got %q", want.When, got.When)
+	}
+}
+
+func TestCommitParents(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	parent, err := repo.Commit(Message("parent"), AllowEmpty)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	commit, err := repo.Commit(
+		Message("child"),
+		Parents(parent),
+		AllowEmpty)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := []*Commit{parent}
+	got, err := commit.Parents()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(want, got) {
+		t.Errorf("want commit parents %v, got %v", want, got)
 	}
 }

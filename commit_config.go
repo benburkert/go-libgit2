@@ -127,3 +127,10 @@ func Message(message string) CommitOption {
 		c.message = message
 	}
 }
+
+// Parents sets the commits used as the parents.
+func Parents(parents ...*Commit) CommitOption {
+	return func(c *commitConfig) {
+		c.parents = parents
+	}
+}

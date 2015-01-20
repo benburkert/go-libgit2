@@ -34,6 +34,14 @@ const libgit2_result libgit2_commit_lookup(
 		git_repository *repo,
 		const git_oid *id);
 
+const libgit2_result libgit2_commit_parent(
+		git_commit **out,
+		const git_commit *commit,
+		unsigned int n);
+
+const libgit2_result libgit2_commit_parentcount(
+		const git_commit *commit);
+
 // index.h
 
 const libgit2_result libgit2_index_add_bypath(
