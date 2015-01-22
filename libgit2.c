@@ -12,6 +12,36 @@ libgit2_result libgit2_wrap_result(const int code)
        return res;
 }
 
+// branch.h
+
+LIBGIT2_WRAPPER(libgit2_branch_create(
+		git_reference **out,
+		git_repository *repo,
+		const char *branch_name,
+		const git_commit *target,
+		int force,
+		const git_signature *signature,
+		const char *log_message),
+	git_branch_create(out, repo, branch_name, target, force, signature,
+		log_message))
+
+LIBGIT2_WRAPPER(libgit2_branch_iterator_new(
+		git_branch_iterator **out,
+		git_repository *repo,
+		git_branch_t list_flags),
+	git_branch_iterator_new(out, repo, list_flags))
+
+LIBGIT2_WRAPPER(libgit2_branch_name(
+		const char **out,
+		const git_reference *ref),
+	git_branch_name(out, ref))
+
+LIBGIT2_WRAPPER(libgit2_branch_next(
+		git_reference **out,
+		git_branch_t *out_type,
+		git_branch_iterator *iter),
+	git_branch_next(out, out_type, iter))
+
 // commit.h
 
 LIBGIT2_WRAPPER(libgit2_commit_create(

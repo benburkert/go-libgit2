@@ -139,14 +139,14 @@ func (r *gitRevwalk) init() {
 	runtime.SetFinalizer(r, (*gitRevwalk).free)
 }
 
-func (r *gitRevwalk) next() (*gitOID, error) {
-	oid := &gitOID{ptr: &C.git_oid{}}
-	return oid, unwrapErr(C.libgit2_revwalk_next(oid.ptr, r.ptr))
-}
-
 func (r *gitRevwalk) free() {
 	runtime.SetFinalizer(r, nil)
 	C.git_revwalk_free(r.ptr)
+}
+
+func (r *gitRevwalk) next() (*gitOID, error) {
+	oid := &gitOID{ptr: &C.git_oid{}}
+	return oid, unwrapErr(C.libgit2_revwalk_next(oid.ptr, r.ptr))
 }
 
 func (r *gitRevwalk) pushHead() error {

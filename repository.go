@@ -43,6 +43,12 @@ func OpenRepository(dir string) (*Repository, error) {
 	return &Repository{r}, nil
 }
 
+// Branches returns a branch walker for all the repository's branches (local
+// and remote).
+func (r Repository) Branches() (*BranchWalker, error) {
+	return newBranchWalker(r, branchAll)
+}
+
 // Commit creates a new commit in the repository.
 func (r Repository) Commit(options ...CommitOption) (*Commit, error) {
 	config := &commitConfig{repo: r}
@@ -54,6 +60,19 @@ func (r Repository) Commit(options ...CommitOption) (*Commit, error) {
 	}
 
 	return createCommit(config)
+}
+
+// CreateBranch creates a new local branch with the given name and options.
+func (r Repository) CreateBranch(name string, options ...BranchOption) (*Branch, error) {
+	config := &branchConfig{repo: r, name: name}
+	for _, opt := range options {
+		opt(config)
+	}
+	if err := config.check(); err != nil {
+		return nil, err
+	}
+
+	return createBranch(config)
 }
 
 // DefaultSignature returns a new action signature with default user and now

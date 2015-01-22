@@ -15,6 +15,31 @@ typedef struct libgit2_result {
 
 libgit2_result libgit2_wrap_result(const int);
 
+// branch.h
+
+const libgit2_result libgit2_branch_create(
+		git_reference **out,
+		git_repository *repo,
+		const char *branch_name,
+		const git_commit *target,
+		int force,
+		const git_signature *signature,
+		const char *log_message);
+
+const libgit2_result libgit2_branch_iterator_new(
+		git_branch_iterator **out,
+		git_repository *repo,
+		git_branch_t list_flags);
+
+const libgit2_result libgit2_branch_name(
+		const char **out,
+		const git_reference *ref);
+
+const libgit2_result libgit2_branch_next(
+		git_reference **out,
+		git_branch_t *out_type,
+		git_branch_iterator *iter);
+
 // commit.h
 
 const libgit2_result libgit2_commit_create(
