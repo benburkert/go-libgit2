@@ -51,3 +51,20 @@ func TestCreateBranch(t *testing.T) {
 		}
 	}
 }
+
+func TestDestroyBranch(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	mustSeedRepo(t, repo)
+
+	branch, err := repo.CreateBranch(rndstr())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err = branch.Delete(); err != nil {
+		t.Error(err)
+	}
+}

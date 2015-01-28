@@ -26,6 +26,9 @@ const libgit2_result libgit2_branch_create(
 		const git_signature *signature,
 		const char *log_message);
 
+const libgit2_result libgit2_branch_delete(
+		git_reference *branch);
+
 const libgit2_result libgit2_branch_iterator_new(
 		git_branch_iterator **out,
 		git_repository *repo,

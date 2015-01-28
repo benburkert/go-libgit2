@@ -33,6 +33,11 @@ func createBranch(config *branchConfig) (*Branch, error) {
 	return &Branch{ref, branchLocal}, nil
 }
 
+// Delete an existing branch reference.
+func (b Branch) Delete() error {
+	return gitBranchDelete(b.gitReference)
+}
+
 // Name return the name of the given local or remote branch.
 func (b Branch) Name() (string, error) {
 	return gitBranchName(b.gitReference)
@@ -175,6 +180,10 @@ func gitBranchCreate(repo *gitRepository, branchName string, target *gitCommit,
 	r := &gitReference{ptr}
 	r.init()
 	return r, nil
+}
+
+func gitBranchDelete(branch *gitReference) error {
+	return unwrapErr(C.libgit2_branch_delete(branch.ptr))
 }
 
 func gitBranchIteratorNew(r *gitRepository, t branchType) (*gitBranchIterator, error) {

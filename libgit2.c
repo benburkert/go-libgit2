@@ -25,6 +25,10 @@ LIBGIT2_WRAPPER(libgit2_branch_create(
 	git_branch_create(out, repo, branch_name, target, force, signature,
 		log_message))
 
+LIBGIT2_WRAPPER(libgit2_branch_delete(
+		git_reference *branch),
+	git_branch_delete(branch))
+
 LIBGIT2_WRAPPER(libgit2_branch_iterator_new(
 		git_branch_iterator **out,
 		git_repository *repo,
