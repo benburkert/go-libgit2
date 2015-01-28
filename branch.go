@@ -40,18 +40,9 @@ func (b Branch) Delete() error {
 	return gitBranchDelete(b.gitReference)
 }
 
-// Move renames an existing local branch reference.
+// Move renames a local branch reference.
 func (b Branch) Move(newName string, options ...BranchOption) (*Branch, error) {
-	config := &branchConfig{repo: b.repo, name: newName}
-	for _, opt := range options {
-		opt(config)
-	}
-	if err := config.checkMove(); err != nil {
-		return nil, err
-	}
-
-	ref, err := gitBranchMove(b.gitReference, config.name, config.force,
-		config.sig.gitSignature, config.logMessage)
+	ref, err := b.move(newName, options)
 	if err != nil {
 		return nil, err
 	}
@@ -62,6 +53,30 @@ func (b Branch) Move(newName string, options ...BranchOption) (*Branch, error) {
 // Name return the name of the given local or remote branch.
 func (b Branch) Name() (string, error) {
 	return gitBranchName(b.gitReference)
+}
+
+// Rename changes the name of the Branch.
+func (b *Branch) Rename(newName string, options ...BranchOption) error {
+	ref, err := b.move(newName, options)
+	if err != nil {
+		return err
+	}
+
+	b.gitReference = ref
+	return nil
+}
+
+func (b Branch) move(newName string, options []BranchOption) (*gitReference, error) {
+	config := &branchConfig{repo: b.repo, name: newName}
+	for _, opt := range options {
+		opt(config)
+	}
+	if err := config.checkMove(); err != nil {
+		return nil, err
+	}
+
+	return gitBranchMove(b.gitReference, config.name, config.force,
+		config.sig.gitSignature, config.logMessage)
 }
 
 // BranchWalker is an in-progress walk of branches in a repo.

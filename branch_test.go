@@ -95,3 +95,29 @@ func TestMoveBranch(t *testing.T) {
 		t.Errorf("want branch name %q, got %q", want, got)
 	}
 }
+
+func TestRenameBranch(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	mustSeedRepo(t, repo)
+
+	branch, err := repo.CreateBranch(rndstr())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := rndstr()
+	if err := branch.Rename(want); err != nil {
+		t.Fatal(err)
+	}
+
+	got, err := branch.Name()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want != got {
+		t.Errorf("want branch name %q, got %q", want, got)
+	}
+}
