@@ -12,13 +12,25 @@ type branchConfig struct {
 // BranchOption is an option type for git branch operations
 type BranchOption func(*branchConfig)
 
-func (c *branchConfig) check() error {
+func (c *branchConfig) checkCreate() error {
 	var err error
 	if c.target == nil {
 		if c.target, err = c.repo.tip(); err != nil {
 			return err
 		}
 	}
+
+	if c.sig == nil {
+		if c.sig, err = c.repo.DefaultSignature(); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (c *branchConfig) checkMove() error {
+	var err error
 
 	if c.sig == nil {
 		if c.sig, err = c.repo.DefaultSignature(); err != nil {

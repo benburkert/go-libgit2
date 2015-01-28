@@ -34,6 +34,14 @@ const libgit2_result libgit2_branch_iterator_new(
 		git_repository *repo,
 		git_branch_t list_flags);
 
+const libgit2_result libgit2_branch_move(
+		git_reference **out,
+		git_reference *branch,
+		const char *new_branch_name,
+		int force,
+		const git_signature *signature,
+		const char *log_message);
+
 const libgit2_result libgit2_branch_name(
 		const char **out,
 		const git_reference *ref);

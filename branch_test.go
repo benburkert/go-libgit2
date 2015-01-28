@@ -68,3 +68,30 @@ func TestDestroyBranch(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestMoveBranch(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	mustSeedRepo(t, repo)
+
+	oldBranch, err := repo.CreateBranch(rndstr())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := rndstr()
+	newBranch, err := oldBranch.Move(want)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got, err := newBranch.Name()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want != got {
+		t.Errorf("want branch name %q, got %q", want, got)
+	}
+}

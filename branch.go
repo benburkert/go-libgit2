@@ -21,6 +21,8 @@ const (
 type Branch struct {
 	*gitReference
 	t branchType
+
+	repo Repository
 }
 
 func createBranch(config *branchConfig) (*Branch, error) {
@@ -30,12 +32,31 @@ func createBranch(config *branchConfig) (*Branch, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Branch{ref, branchLocal}, nil
+	return &Branch{ref, branchLocal, config.repo}, nil
 }
 
 // Delete an existing branch reference.
 func (b Branch) Delete() error {
 	return gitBranchDelete(b.gitReference)
+}
+
+// Move renames an existing local branch reference.
+func (b Branch) Move(newName string, options ...BranchOption) (*Branch, error) {
+	config := &branchConfig{repo: b.repo, name: newName}
+	for _, opt := range options {
+		opt(config)
+	}
+	if err := config.checkMove(); err != nil {
+		return nil, err
+	}
+
+	ref, err := gitBranchMove(b.gitReference, config.name, config.force,
+		config.sig.gitSignature, config.logMessage)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Branch{ref, branchLocal, b.repo}, nil
 }
 
 // Name return the name of the given local or remote branch.
@@ -46,6 +67,8 @@ func (b Branch) Name() (string, error) {
 // BranchWalker is an in-progress walk of branches in a repo.
 type BranchWalker struct {
 	*gitBranchIterator
+
+	repo Repository
 
 	C <-chan *Branch
 
@@ -64,6 +87,7 @@ func newBranchWalker(r Repository, t branchType) (*BranchWalker, error) {
 	c := make(chan *Branch)
 	w := &BranchWalker{
 		gitBranchIterator: iter,
+		repo:              r,
 		C:                 c,
 		co:                &sync.Once{},
 		cc:                make(chan struct{}),
@@ -107,7 +131,7 @@ func (w *BranchWalker) next() (*Branch, error) {
 	if r == nil {
 		return nil, nil
 	}
-	return &Branch{r, t}, nil
+	return &Branch{r, t, w.repo}, nil
 }
 
 func (w *BranchWalker) run(c chan<- *Branch) {
@@ -168,8 +192,12 @@ func gitBranchCreate(repo *gitRepository, branchName string, target *gitCommit,
 	var ptr *C.git_reference
 
 	cname := C.CString(branchName)
+	defer C.free(unsafe.Pointer(cname))
+
 	cforce := cbool(force)
+
 	cmessage := C.CString(message)
+	defer C.free(unsafe.Pointer(cmessage))
 
 	err := unwrapErr(C.libgit2_branch_create(&ptr, repo.ptr, cname, target.ptr,
 		cforce, signature.ptr, cmessage))
@@ -190,6 +218,7 @@ func gitBranchIteratorNew(r *gitRepository, t branchType) (*gitBranchIterator, e
 	var ptr *C.git_branch_iterator
 
 	ct := C.git_branch_t(t)
+
 	err := unwrapErr(C.libgit2_branch_iterator_new(&ptr, r.ptr, ct))
 	if err != nil {
 		return nil, err
@@ -198,6 +227,30 @@ func gitBranchIteratorNew(r *gitRepository, t branchType) (*gitBranchIterator, e
 	i := &gitBranchIterator{ptr}
 	i.init()
 	return i, nil
+}
+
+func gitBranchMove(branch *gitReference, newBranchName string, force bool,
+	signature *gitSignature, logMessage string) (*gitReference, error) {
+
+	var ptr *C.git_reference
+
+	cname := C.CString(newBranchName)
+	defer C.free(unsafe.Pointer(cname))
+
+	cforce := cbool(force)
+
+	cmessage := C.CString(logMessage)
+	defer C.free(unsafe.Pointer(cmessage))
+
+	err := unwrapErr(C.libgit2_branch_move(&ptr, branch.ptr, cname, cforce,
+		signature.ptr, cmessage))
+	if err != nil {
+		return nil, err
+	}
+
+	r := &gitReference{ptr}
+	r.init()
+	return r, nil
 }
 
 func gitBranchName(r *gitReference) (string, error) {

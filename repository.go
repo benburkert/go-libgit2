@@ -68,7 +68,7 @@ func (r Repository) CreateBranch(name string, options ...BranchOption) (*Branch,
 	for _, opt := range options {
 		opt(config)
 	}
-	if err := config.check(); err != nil {
+	if err := config.checkCreate(); err != nil {
 		return nil, err
 	}
 
