@@ -35,6 +35,13 @@ LIBGIT2_WRAPPER(libgit2_branch_iterator_new(
 		git_branch_t list_flags),
 	git_branch_iterator_new(out, repo, list_flags))
 
+LIBGIT2_WRAPPER(libgit2_branch_lookup(
+		git_reference **out,
+		git_repository *repo,
+		const char *branch_name,
+		git_branch_t branch_type),
+	git_branch_lookup(out, repo, branch_name, branch_type))
+
 LIBGIT2_WRAPPER(libgit2_branch_move(
 		git_reference **out,
 		git_reference *branch,

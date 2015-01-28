@@ -3,6 +3,7 @@ package libgit2
 import (
 	"io/ioutil"
 	"os"
+	"reflect"
 	"testing"
 )
 
@@ -133,6 +134,32 @@ func TestRepositoryOpen(t *testing.T) {
 
 	if _, err := OpenRepository(repo.Workdir()); err != nil {
 		t.Error(err)
+	}
+}
+
+func TestRepositoryLocalBranch(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	mustSeedRepo(t, repo)
+
+	want, err := repo.CreateBranch(rndstr())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	name, err := want.Name()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got, err := repo.LocalBranch(name)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(want, got) {
+		t.Errorf("want local branch %v, got %v", want, got)
 	}
 }
 

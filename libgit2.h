@@ -34,6 +34,12 @@ const libgit2_result libgit2_branch_iterator_new(
 		git_repository *repo,
 		git_branch_t list_flags);
 
+const libgit2_result libgit2_branch_lookup(
+		git_reference **out,
+		git_repository *repo,
+		const char *branch_name,
+		git_branch_t branch_type);
+
 const libgit2_result libgit2_branch_move(
 		git_reference **out,
 		git_reference *branch,

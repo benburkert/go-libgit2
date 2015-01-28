@@ -101,6 +101,15 @@ func (r Repository) IsBare() bool {
 	return gitRepositoryIsBare(r.gitRepository)
 }
 
+// LocalBranch looks up a local branch in the repository by its name.
+func (r Repository) LocalBranch(name string) (*Branch, error) {
+	ref, err := gitBranchLookup(r.gitRepository, name, branchLocal)
+	if err != nil {
+		return nil, err
+	}
+	return &Branch{ref, branchLocal, r}, nil
+}
+
 // Path returns the file path the .git directory for normal repositories, or
 // the repository itself for bare repositories.
 func (r Repository) Path() string {

@@ -244,6 +244,24 @@ func gitBranchIteratorNew(r *gitRepository, t branchType) (*gitBranchIterator, e
 	return i, nil
 }
 
+func gitBranchLookup(repo *gitRepository, branchName string, t branchType) (*gitReference, error) {
+	var ptr *C.git_reference
+
+	cname := C.CString(branchName)
+	defer C.free(unsafe.Pointer(cname))
+
+	ct := C.git_branch_t(t)
+
+	err := unwrapErr(C.libgit2_branch_lookup(&ptr, repo.ptr, cname, ct))
+	if err != nil {
+		return nil, err
+	}
+
+	r := &gitReference{ptr}
+	r.init()
+	return r, nil
+}
+
 func gitBranchMove(branch *gitReference, newBranchName string, force bool,
 	signature *gitSignature, logMessage string) (*gitReference, error) {
 
