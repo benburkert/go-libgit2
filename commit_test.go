@@ -183,3 +183,36 @@ func TestCommitShortID(t *testing.T) {
 		t.Errorf("invalid short id %q for %q", shortID, id)
 	}
 }
+
+func TestCommitSubject(t *testing.T) {
+	repo := mustInitTestRepo(t)
+	pushd(t, repo.Workdir())
+	defer popd(t)
+
+	tests := []struct {
+		subject, message string
+	}{
+		// subject is whole message
+		{subject: "a simple subject", message: "a simple subject\n"},
+		// subject with more message
+		{subject: "a subject", message: "a subject\n\nthe remaining message\n"},
+		// multi-line subject
+		{
+			subject: "a\n  multi-line\nsubject",
+			message: "a\n  multi-line\nsubject\n\nmessage body\n",
+		},
+	}
+
+	for _, test := range tests {
+		commit, err := repo.Commit(AllowEmpty, Message(test.message))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		want := test.subject
+		got := commit.Subject()
+		if want != got {
+			t.Errorf("want commit subject %q, got %q", want, got)
+		}
+	}
+}
