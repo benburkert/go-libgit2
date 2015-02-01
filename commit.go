@@ -62,7 +62,7 @@ func (c Commit) String() string {
 
 // Subject returns the first paragraph of the message.
 func (c Commit) Subject() string {
-	return strings.TrimSpace(strings.Split(c.Message(), "\n\n")[0])
+	return strings.Split(c.Message(), "\n\n")[0]
 }
 
 func createCommit(config *commitConfig) (*Commit, error) {

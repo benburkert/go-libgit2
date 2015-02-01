@@ -193,7 +193,7 @@ func TestCommitSubject(t *testing.T) {
 		subject, message string
 	}{
 		// subject is whole message
-		{subject: "a simple subject", message: "a simple subject\n"},
+		{subject: "a simple subject", message: "a simple subject\n\n"},
 		// subject with more message
 		{subject: "a subject", message: "a subject\n\nthe remaining message\n"},
 		// multi-line subject
